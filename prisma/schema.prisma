@@ -1,13 +1,42 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
-}
-
+// 1. Data Source: Changed from "mongodb" to "postgresql"
 datasource db {
   provider = "postgresql"
+  
+}
+
+// 2. Generator: Creates your "Remote Control" (Prisma Client)
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 3. User Model: Updated IDs for PostgreSQL
+model User {
+  id            String    @id @default(cuid()) // PostgreSQL uses CUID or UUID strings
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+}
+
+// 4. Account Model: Links social logins (Google, GitHub, etc.) to Users
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text // @db.Text allows long tokens in Postgres
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
