@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import SplashCursor from '@/components/SplashCursor';
 
 export default function ForgotPasswordPage() {
     const [step, setStep] = useState(1); // 1: Email, 2: OTP
 
     return (
         <div className="form-container">
+            <SplashCursor />
             <p className="title">{step === 1 ? "Reset Password" : "Verify OTP"}</p>
             <p className="sub-title">
                 {step === 1

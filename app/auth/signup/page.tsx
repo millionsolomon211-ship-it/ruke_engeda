@@ -2,18 +2,82 @@
 
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import SplashCursor from '@/components/SplashCursor';
 
 export default function SignupPage() {
+    const router = useRouter();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        try {
+            const res = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.error || "An error occurred");
+                setLoading(false);
+                return;
+            }
+
+            // Redirect to OTP verification
+            router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
+            
+        } catch (err) {
+            setError("Something went wrong");
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="form-container">
+            <SplashCursor />
             <p className="title">Create account</p>
 
+            {error && <p style={{ color: "red", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{error}</p>}
 
-            <form className="form" onSubmit={(e) => e.preventDefault()}>
-                <input type="text" className="input" placeholder="Full Name" required />
-                <input type="email" className="input" placeholder="Email" required />
-                <input type="password" className="input" placeholder="Password" required />
-                <button className="form-btn" type="submit">Create account</button>
+            <form className="form" onSubmit={handleSubmit}>
+                <input 
+                    type="text" 
+                    className="input" 
+                    placeholder="Full Name" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required 
+                />
+                <input 
+                    type="email" 
+                    className="input" 
+                    placeholder="Email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required 
+                />
+                <input 
+                    type="password" 
+                    className="input" 
+                    placeholder="Password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required 
+                />
+                <button className="form-btn" type="submit" disabled={loading}>
+                    {loading ? "Creating..." : "Create account"}
+                </button>
             </form>
 
             <p className="sign-up-label" style={{ marginTop: '15px', textAlign: 'center' }}>

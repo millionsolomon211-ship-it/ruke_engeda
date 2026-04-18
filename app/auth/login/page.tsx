@@ -2,26 +2,81 @@
 
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import SplashCursor from '@/components/SplashCursor';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        type: "login",
+        email,
+        password,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+        setLoading(false);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err) {
+      setError("Something went wrong");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="form-container">
+      <SplashCursor />
       <p className="title">Welcome Back</p>
-      <form className="form" onSubmit={(e) => e.preventDefault()}>
-        <input type="email" className="input" placeholder="Email" />
-        <input type="password" className="input" placeholder="Password" />
+      
+      {error && <p style={{ color: "red", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{error}</p>}
+
+      <form className="form" onSubmit={handleSubmit}>
+        <input 
+          type="email" 
+          className="input" 
+          placeholder="Email" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input 
+          type="password" 
+          className="input" 
+          placeholder="Password" 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <p className="page-link">
           <Link href="./forgot-password" style={{ textDecoration: 'none' }}>
             <span className="page-link-label">Forgot Password?</span>
           </Link>
         </p>
-        <button className="form-btn" type="submit">Log in</button>
+        <button className="form-btn" type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Log in"}
+        </button>
       </form>
 
       <div className="buttons-container" style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#747474' }}>OR</div>
 
-        <button className="google-login-button" onClick={() => signIn("google")}>
+        <button className="google-login-button" onClick={() => signIn("google")} type="button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
