@@ -8,7 +8,7 @@ import SplashCursor from '@/components/SplashCursor';
 export default function UserInfoPage() {
     const router = useRouter();
     const { data: session, update } = useSession();
-    
+
     const [username, setUsername] = useState("");
     const [country, setCountry] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -41,9 +41,9 @@ export default function UserInfoPage() {
                 phoneNumber
             });
 
-            router.push("/dashboard"); 
+            router.push("/dashboard");
             router.refresh();
-        } catch(err) {
+        } catch (err) {
             setError("Something went wrong");
             setLoading(false);
         }
@@ -54,7 +54,7 @@ export default function UserInfoPage() {
             <SplashCursor />
             <p className="title">Complete Profile</p>
             <p className="sub-title">Just a few more details to get you started</p>
-            
+
             {error && <p style={{ color: "red", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{error}</p>}
 
             <form className="form" onSubmit={handleSubmit}>
@@ -88,7 +88,7 @@ export default function UserInfoPage() {
 
                 <div className="input-group">
                     <input
-                        type="tel"
+                        type="number"
                         className="input"
                         placeholder="Phone Number (e.g. +1...)"
                         value={phoneNumber}

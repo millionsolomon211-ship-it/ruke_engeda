@@ -9,6 +9,7 @@ function VerifyOtpForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email") || "";
+    const type = searchParams.get("type") || "verification"; // "verification" or "reset"
     
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
@@ -20,7 +21,10 @@ function VerifyOtpForm() {
         setError("");
         
         try {
-            const res = await fetch("/api/auth/resend-otp", {
+            // If it's a reset flow, we call the forgot-password API again to resend
+            const endpoint = type === "reset" ? "/api/auth/forgot-password" : "/api/auth/resend-otp";
+            
+            const res = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email })
@@ -45,22 +49,38 @@ function VerifyOtpForm() {
         setLoading(true);
 
         try {
-            // Because we built a unified NextAuth CredentialsProvider, we can just `signIn` with type="otp"
-            const result = await signIn("credentials", {
-                redirect: false,
-                type: "otp",
-                email: email,
-                otp: otp
-            });
+            if (type === "reset") {
+                // Password reset specific OTP verification
+                const res = await fetch("/api/auth/verify-reset-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp })
+                });
+                const data = await res.json();
 
-            if (result?.error) {
-                setError(result.error);
-                setLoading(false);
+                if (!res.ok) {
+                    setError(data.error || "Invalid OTP");
+                    setLoading(false);
+                } else {
+                    // Success: redirect to new password page with the token
+                    router.push(`/auth/forgot-password/newpassword?token=${data.resetToken}`);
+                }
             } else {
-                // NextAuth redirects are handled centrally or via middleware, 
-                // but we can force redirect here to user_info (or dashboard)
-                router.push("/auth/user_info");
-                router.refresh(); // Important to refresh session state
+                // Default email verification (signup) flow
+                const result = await signIn("credentials", {
+                    redirect: false,
+                    type: "otp",
+                    email: email,
+                    otp: otp
+                });
+
+                if (result?.error) {
+                    setError(result.error);
+                    setLoading(false);
+                } else {
+                    router.push("/auth/user_info");
+                    router.refresh();
+                }
             }
             
         } catch (err) {
@@ -90,6 +110,7 @@ function VerifyOtpForm() {
         </form>
     );
 }
+
 
 export default function VerifyOtpPage() {
     return (

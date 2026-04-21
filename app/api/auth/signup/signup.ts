@@ -12,13 +12,11 @@ export function generateOTP() {
 }
 
 export async function sendOTPEmail(email: string, otp: string) {
-  // In a real app, use environment variables for this config.
-  // We will print it to console for now to ensure we can test without real SMTP!
-  console.log(`\n\n[MOCK EMAIL] To: ${email} | OTP: ${otp}\n\n`);
+
 
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail", 
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_SERVER_USER,
         pass: process.env.EMAIL_SERVER_PASSWORD,
@@ -57,10 +55,10 @@ export async function handleSignup(req: Request) {
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
-    
+
     if (!hasUppercase || !hasLowercase || !hasNumbers) {
-      return NextResponse.json({ 
-        error: "Password must contain at least one uppercase letter, one lowercase letter, and one number." 
+      return NextResponse.json({
+        error: "Password must contain at least one uppercase letter, one lowercase letter, and one number."
       }, { status: 400 });
     }
 
@@ -88,7 +86,7 @@ export async function handleSignup(req: Request) {
 
     // Generate OTP
     const otp = generateOTP();
-    
+
     // Check if token exists for this email, delete it to replace
     await prisma.verificationToken.deleteMany({
       where: { email }

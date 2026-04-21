@@ -2,38 +2,60 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SplashCursor from '@/components/SplashCursor';
 
 export default function ForgotPasswordPage() {
-    const [step, setStep] = useState(1); // 1: Email, 2: OTP
+    const [email, setEmail] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        try {
+            const res = await fetch("/api/auth/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.error || "Something went wrong");
+            } else {
+                // Success: redirect to OTP verification page
+                router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}&type=reset`);
+            }
+        } catch (err) {
+            setError("Failed to connect to the server");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="form-container">
             <SplashCursor />
-            <p className="title">{step === 1 ? "Reset Password" : "Verify OTP"}</p>
-            <p className="sub-title">
-                {step === 1
-                    ? "Enter your email to receive a verification code"
-                    : "Enter the 6-digit code sent to your email"}
-            </p>
+            <p className="title">Reset Password</p>
+            <p className="sub-title">Enter your email to receive a verification code</p>
 
-            <form className="form" onSubmit={(e) => e.preventDefault()}>
-                {step === 1 ? (
-                    <>
-                        <input type="email" className="input" placeholder="Email Address" required />
-                        <button className="form-btn" onClick={() => setStep(2)}>Send OTP</button>
-                    </>
-                ) : (
-                    <>
-                        <input type="text" className="input" placeholder="000000" maxLength={6} style={{ textAlign: 'center', letterSpacing: '8px', fontSize: '20px' }} required />
-                        <button className="form-btn">
-                            <Link href="/new-password" style={{ color: 'inherit', textDecoration: 'none' }}>Verify & Continue</Link>
-                        </button>
-                        <p className="sign-up-label" style={{ textAlign: 'center', cursor: 'pointer' }}>
-                            Didn't get a code? <span className="sign-up-link">Resend</span>
-                        </p>
-                    </>
-                )}
+            <form className="form" onSubmit={handleSubmit}>
+                <input 
+                    type="email" 
+                    className="input" 
+                    placeholder="Email Address" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required 
+                />
+                <button className="form-btn" type="submit" disabled={loading}>
+                    {loading ? "Sending..." : "Send OTP"}
+                </button>
+                {error && <p style={{ color: "red", fontSize: "12px", textAlign: "center", marginTop: "10px" }}>{error}</p>}
             </form>
 
             <p className="sign-up-label" style={{ marginTop: '25px', textAlign: 'center' }}>
@@ -41,4 +63,4 @@ export default function ForgotPasswordPage() {
             </p>
         </div>
     );
-}
+}

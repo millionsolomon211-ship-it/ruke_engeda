@@ -16,8 +16,13 @@ export default function DashboardLayout({
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/login");
+    } else if (status === "authenticated") {
+      const userStatus = (session?.user as any)?.status;
+      if (userStatus !== "admin" && userStatus !== "master") {
+        router.push("/");
+      }
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
   if (status === "loading") {
     return <div>Loading...</div>;

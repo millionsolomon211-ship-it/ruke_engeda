@@ -53,7 +53,7 @@ const handler = NextAuth({
           const tokenRecord = await prisma.verificationToken.findFirst({
             where: { email: credentials.email, token: credentials.otp }
           });
-          
+
           if (!tokenRecord) throw new Error("Invalid OTP");
           if (tokenRecord.expires < new Date()) throw new Error("OTP expired");
 
@@ -96,18 +96,18 @@ const handler = NextAuth({
         token.username = (user as any).username;
         token.country = (user as any).country;
       }
-      
+
       // Handle session update
       if (trigger === "update" && session) {
         if (session.username) token.username = session.username;
         if (session.phoneNumber) token.phoneNumber = session.phoneNumber;
         if (session.country) token.country = session.country;
       }
-      
+
       // Fetch fresh data if needed, but for performance we just rely on the token. 
       // If we want to ensure it's up to date:
       if (token.email && (!token.username || !token.status)) {
-        const dbUser = await prisma.user.findUnique({ where: { email: token.email }});
+        const dbUser = await prisma.user.findUnique({ where: { email: token.email } });
         if (dbUser) {
           token.status = dbUser.status;
           token.phoneNumber = dbUser.phoneNumber;
@@ -129,7 +129,7 @@ const handler = NextAuth({
     },
     async redirect({ url, baseUrl }) {
       // Middleware will handle specific redirect logic (e.g. to user_info or dashboard)
-      return `${baseUrl}/dashboard`
+      return `${baseUrl}/`
     },
   },
 })

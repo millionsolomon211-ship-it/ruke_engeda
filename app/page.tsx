@@ -1,56 +1,92 @@
-import SplashCursor from '@/components/SplashCursor';
-import Image from "next/image";
-import Link from 'next/link'
+"use client";
 
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import SplashCursor from '@/components/SplashCursor';
+import Navbar from "./dashboard/user/components/Navbar";
+import Hero from "./dashboard/user/components/Hero";
+import Destinations from "./dashboard/user/components/Destinations";
+import Locations from "./dashboard/user/components/Locations";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      const userStatus = (session?.user as any)?.status;
+      if (userStatus === "admin" || userStatus === "master") {
+        router.push("/dashboard/admin");
+      }
+    }
+  }, [session, status, router]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        /><SplashCursor />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          
-          
-     <Link href="/auth/login">
-        <button style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
-          Go to Login Page
-        </button>
-      </Link>
-       
+    <div className="flex flex-col min-h-screen bg-white relative">
+      <SplashCursor />
+      <Navbar />
+      
+      <main className="relative z-10">
+        {/* Full screen Hero section - imported from dashboard/user */}
+        <Hero />
 
+        {/* Global Hotspots Destinations section */}
+        <Destinations />
+        
+        {/* Infinite scroll Destinations section - imported from dashboard/user */}
+        <Locations />
 
-       
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-           
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        
+        {/* About Section Snippet */}
+        <section id="about-snippet" className="py-24 bg-white px-6 max-lg:bg-transparent max-lg:mobile-transparent">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1">
+              <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Our Story</h2>
+              <p className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-8 leading-tight">
+                CRAFTING MEMORIES<br />
+                ACROSS THE GLOBE
+              </p>
+              <p className="text-gray-600 mb-8 leading-loose text-lg">
+                RUKE is a premium tourism platform dedicated to connecting travelers with unique, authentic, and unforgettable locations.
+              </p>
+              <button className="px-8 py-3 bg-teal-600 text-white rounded-full font-bold hover:bg-teal-700 transition-all shadow-xl">
+                Read Our Story
+              </button>
+            </div>
+            <div className="flex-1 grid grid-cols-2 gap-4 h-[500px]">
+              <div className="rounded-2xl overflow-hidden mt-12 bg-gray-100">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="Travel" />
+              </div>
+              <div className="rounded-2xl overflow-hidden mb-12 bg-gray-100">
+                <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="Beach" />
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-20 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="col-span-1 md:col-span-2">
+            <h2 className="text-3xl font-black mb-6">RUKE<span className="text-teal-500">.</span></h2>
+            <p className="text-gray-400 max-w-sm leading-relaxed">
+              Leading the way in premium travel experiences. Connect with us to explore the unseen corners of the world.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-bold mb-6 uppercase text-sm tracking-widest">Connect</h3>
+            <ul className="space-y-4 text-gray-400">
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Instagram</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Twitter</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+          &copy; {new Date().getFullYear()} RUKE Tourism. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

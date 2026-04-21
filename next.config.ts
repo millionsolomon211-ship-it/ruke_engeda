@@ -1,7 +1,8 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: {
-      allowedOrigins: ['objective-flower-00277.pktriot.net'],
-    },
+    allowedDevOrigins: ['objective-flower-00277.pktriot.net'],
   },
-};
+}
+
+module.exports = nextConfig
