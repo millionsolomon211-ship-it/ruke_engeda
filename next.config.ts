@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ['objective-flower-00277.pktriot.net'],
   experimental: {
-    allowedDevOrigins: ['objective-flower-00277.pktriot.net'],
+    // Other experimental features if any
   },
 }
 

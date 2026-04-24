@@ -40,14 +40,14 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="hidden lg:flex items-center gap-10">
-          <Link href="/#destinations" className="text-sm font-semibold uppercase hover:text-teal-400 transition-colors tracking-widest">
+        <div className="hidden lg:flex items-center gap-6">
+          <Link href="/#locations" className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
             Destinations
           </Link>
-          <Link href="/bookings" onClick={handleBookingsClick} className="text-sm font-semibold uppercase hover:text-teal-400 transition-colors tracking-widest">
+          <Link href="/bookings" onClick={handleBookingsClick} className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
             Bookings
           </Link>
-          <Link href="/about" className="text-sm font-semibold uppercase hover:text-teal-400 transition-colors tracking-widest">
+          <Link href="/about" className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
             About
           </Link>
         </div>
@@ -55,30 +55,30 @@ const Navbar = () => {
         {/* Auth Buttons */}
         <div className="hidden lg:flex items-center gap-4">
           {session ? (
-            <div className="flex items-center gap-4">
-              <span className="text-sm opacity-80">{session.user?.name}</span>
+            <div className="flex items-center gap-4 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10">
+              <span className="text-sm font-medium">{session.user?.name}</span>
               <button
                 onClick={() => signOut()}
-                className="px-6 py-2 rounded-full border border-current text-sm font-bold hover:bg-white hover:text-black transition-all"
+                className="ml-2 px-4 py-1 rounded-full bg-red-500/80 hover:bg-red-600 text-[10px] font-black uppercase transition-all"
               >
                 Sign Out
               </button>
             </div>
           ) : (
-            <>
+            <div className="flex items-center gap-2 p-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10">
               <Link
                 href="/auth/login"
-                className="px-6 py-2 text-sm font-bold hover:opacity-80 transition-opacity"
+                className="px-6 py-2 text-xs font-bold hover:text-teal-400 transition-colors"
               >
                 Login
               </Link>
               <Link
                 href="/auth/signup"
-                className="px-6 py-2 bg-teal-600 text-white rounded-full text-sm font-bold hover:bg-teal-700 transition-all shadow-lg"
+                className="px-6 py-2 bg-teal-600 text-white rounded-full text-xs font-black uppercase hover:bg-teal-700 transition-all shadow-lg"
               >
                 Sign Up
               </Link>
-            </>
+            </div>
           )}
         </div>
 

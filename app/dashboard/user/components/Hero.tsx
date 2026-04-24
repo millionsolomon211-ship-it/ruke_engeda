@@ -12,9 +12,9 @@ const images = [
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white">
-      {/* Background Slider (Desktop: Background, Mobile: Bottom/Separate) */}
-      <div className="slider-container order-2 lg:order-1 h-[50vh] lg:h-full lg:absolute lg:inset-0">
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Background Slider */}
+      <div className="slider-container absolute inset-0">
         {images.map((src, i) => (
           <div
             key={src}
@@ -25,25 +25,33 @@ const Hero = () => {
             }}
           />
         ))}
-        <div className="slider-overlay" />
+        <div className="slider-overlay absolute inset-0 bg-black/40" />
       </div>
 
       {/* Content Area */}
-      <div className="relative z-10 flex flex-col justify-center items-start px-6 lg:px-24 py-32 lg:py-0 w-full lg:w-1/2 order-1 lg:order-2">
-        <h1 className="text-5xl lg:text-8xl font-black text-black lg:text-white leading-tight mb-6 tracking-tighter">
-          EXPLORE<br />
-          THE <span className="text-teal-500">WORLD.</span>
-        </h1>
-        <p className="text-lg lg:text-xl text-gray-700 lg:text-gray-200 mb-8 max-w-md font-medium leading-relaxed">
-          Embark on a journey to the most breathtaking destinations on Earth. Your next adventure starts here.
-        </p>
-        <div className="flex gap-4">
-          <button className="px-10 py-4 bg-teal-600 text-white rounded-full font-black uppercase text-sm tracking-widest hover:bg-teal-700 transition-all shadow-2xl">
-            Start Journey
-          </button>
-          <button className="hidden sm:block px-10 py-4 border-2 border-black lg:border-white text-black lg:text-white rounded-full font-black uppercase text-sm tracking-widest hover:bg-white hover:text-black transition-all">
-            Learn More
-          </button>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-24 py-32">
+        <div className="max-w-3xl">
+          <h1 className="text-6xl lg:text-9xl font-black text-white leading-[0.9] mb-8 tracking-tighter drop-shadow-2xl">
+            EXPLORE<br />
+            THE <span className="text-teal-400">WORLD.</span>
+          </h1>
+          <p className="text-xl lg:text-2xl text-white/90 mb-12 max-w-lg font-medium leading-relaxed drop-shadow-lg">
+            Embark on a journey to the most breathtaking destinations on Earth. Your next adventure starts here.
+          </p>
+          <div className="flex flex-wrap gap-6">
+            <button 
+              onClick={() => document.getElementById('locations')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-5 bg-teal-500 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-teal-400 transition-all shadow-[0_20px_50px_rgba(20,184,166,0.3)] hover:-translate-y-1"
+            >
+              Start Journey
+            </button>
+            <button 
+              onClick={() => document.getElementById('about-snippet')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-5 bg-white/10 backdrop-blur-md border-2 border-white/20 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-white hover:text-black transition-all hover:-translate-y-1"
+            >
+              Learn More
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -153,63 +153,42 @@ select.input:focus {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-}
-
-@media (min-width: 1024px) {
-  .slider-container {
-    position: relative;
-    flex: 1;
-    inset: auto;
-  }
+  width: 100%;
+  height: 100%;
 }
 
 .slide {
   position: absolute;
   inset: 0;
-  background-size: 100% 100%;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: transform 1.5s ease-in-out;
-  animation: imageFade 12s infinite;
+  transition: opacity 2s ease-in-out;
+  animation: imageFade 20s infinite;
 }
 
 @keyframes imageFade {
-
-  0%,
-  100% {
-    opacity: 0;
+  0%, 20% {
+    opacity: 1;
     transform: scale(1);
   }
-
-  10%,
-  33% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-
-  43%,
-  90% {
+  25%, 100% {
     opacity: 0;
+    transform: scale(1.1);
   }
 }
 
-.slide:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.slide:nth-child(2) {
-  animation-delay: 4s;
-}
-
-.slide:nth-child(3) {
-  animation-delay: 8s;
-}
+.slide:nth-child(1) { animation-delay: 0s; }
+.slide:nth-child(2) { animation-delay: 4s; }
+.slide:nth-child(3) { animation-delay: 8s; }
+.slide:nth-child(4) { animation-delay: 12s; }
+.slide:nth-child(5) { animation-delay: 16s; }
 
 .slider-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, rgba(0, 128, 128, 0.2), rgba(0, 0, 0, 0.5));
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
   z-index: 5;
 }
 
