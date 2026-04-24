@@ -6,8 +6,8 @@ import { useEffect } from "react";
 import SplashCursor from '@/components/SplashCursor';
 import Navbar from "./dashboard/user/components/Navbar";
 import Hero from "./dashboard/user/components/Hero";
-import Destinations from "./dashboard/user/components/Destinations";
 import Locations from "./dashboard/user/components/Locations";
+import Regions from "./dashboard/user/components/Regions";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -26,18 +26,18 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-white relative">
       <SplashCursor />
       <Navbar />
-      
+
       <main className="relative z-10">
         {/* Full screen Hero section - imported from dashboard/user */}
         <Hero />
 
-        {/* Global Hotspots Destinations section */}
-        <Destinations />
-        
-        {/* Infinite scroll Destinations section - imported from dashboard/user */}
+        {/* Global Hotspots Locations section */}
         <Locations />
-
         
+        {/* Infinite scroll Regions section */}
+        <Regions />
+
+
         {/* About Section Snippet */}
         <section id="about-snippet" className="py-24 bg-white px-6 max-lg:bg-transparent max-lg:mobile-transparent">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">

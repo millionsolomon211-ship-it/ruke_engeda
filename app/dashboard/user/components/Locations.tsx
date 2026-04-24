@@ -3,22 +3,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SkeletonCard } from "./SkeletonCard";
 
-interface Item {
-  id: string;
+interface Location {
+  _id: string;
   name: string;
   description: string;
   image: string;
-  price: number;
-  rating: string;
+  price?: number;
+  rating?: string;
 }
 
 const Locations = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [page, setPage] = useState(1);
+  const [items, setItems] = useState<Location[]>([]);
+  const [offset, setOffset] = useState(0);
+  const offsetRef = useRef(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState("");
   const loaderRef = useRef(null);
+  const limit = 3;
+
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
   const fetchItems = async () => {
     if (loading || !hasMore) return;
@@ -27,15 +31,28 @@ const Locations = () => {
     setError("");
 
     try {
-      const res = await fetch(`/api/servise/locations?page=${page}`);
+      const currentOffset = offsetRef.current;
+      const res = await fetch(`/api/locations?offset=${currentOffset}&lim=${limit}`);
       const data = await res.json();
 
       if (res.ok) {
-        setItems((prev) => [...prev, ...data.data]);
-        setHasMore(data.hasMore);
-        setPage((prev) => prev + 1);
+        const newItems = data.data || [];
+
+        if (newItems.length === 0 || data.message === "nomore content") {
+          setHasMore(false);
+        } else {
+          setItems((prev) => [...prev, ...newItems]);
+          const nextOffset = currentOffset + newItems.length;
+          offsetRef.current = nextOffset;
+          setOffset(nextOffset);
+
+          if (data.hasMore === false || newItems.length < limit) {
+            setHasMore(false);
+          }
+        }
       } else {
-        setError(data.error || "Failed to fetch items");
+        setError(data.error || "Failed to fetch locations");
+        setHasMore(false);
       }
     } catch (err) {
       setError("Failed to connect to the server");
@@ -51,56 +68,64 @@ const Locations = () => {
           fetchItems();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "100px" }
     );
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
     }
 
     return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
       }
     };
-  }, [loading, hasMore, page]);
+  }, [loading, hasMore]);
+
+  const getImageUrl = (imgName: string) => {
+    if (!imgName || imgName === "noname") return `${backendUrl}/img/region/nopic.jpg`;
+    if (imgName.startsWith("http")) return imgName;
+    return `${backendUrl}/img/locations/${imgName}`;
+  };
 
   return (
-    <section id="destinations" className="py-24 bg-gray-50 px-6">
+    <section id="locations" className="py-24 bg-white px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-          <div>
-            <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Featured</h2>
-            <p className="text-4xl md:text-5xl font-black text-black tracking-tighter">POPULAR DESTINATIONS</p>
-          </div>
-          <p className="text-gray-500 max-w-sm">
-            Hand-picked locations for the ultimate travel experience perfectly suited for your next adventure.
-          </p>
+        <div className="mb-12">
+          <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Prime Destinations</h2>
+          <p className="text-4xl md:text-5xl font-black text-black tracking-tighter uppercase">Global Hotspots</p>
         </div>
 
-        {/* Grid of items */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {/* Cinematic Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {items.map((item) => (
-            <div key={item.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full">
-              <div className="relative h-64 overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                  ⭐ {item.rating}
+            <div key={item._id} className="group relative h-[450px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer">
+              <img
+                src={getImageUrl(item.image)}
+                alt={item.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `${backendUrl}/img/region/nopic.jpg`;
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+              <div className="absolute bottom-8 left-8 right-8 text-white">
+                <div className="flex justify-between items-end">
+                  <div className="flex-1">
+                    <span className="text-xs font-bold uppercase tracking-widest text-teal-400 mb-2 block">Location</span>
+                    <h3 className="text-3xl font-black mb-3">{item.name}</h3>
+                    <p className="text-sm text-gray-300 opacity-90 line-clamp-2 max-w-md mb-2">
+                      {item.description}
+                    </p>
+                  </div>
+                  {item.price && (
+                    <div className="text-right">
+                      <div className="text-2xl font-black mb-1">${item.price}</div>
+                      {item.rating && <div className="text-xs font-bold bg-white/20 backdrop-blur px-2 py-1 rounded-lg inline-block">⭐ {item.rating}</div>}
+                    </div>
+                  )}
                 </div>
-                <div className="absolute bottom-4 left-4 bg-teal-600 text-white px-3 py-1 rounded-lg text-sm font-bold shadow-lg">
-                  ${item.price}
-                </div>
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-2 group-hover:text-teal-600 transition-colors">{item.name}</h3>
-                <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-grow">{item.description}</p>
-                <button className="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-teal-600 transition-all">
-                  Book Now
-                </button>
               </div>
             </div>
           ))}
@@ -108,8 +133,8 @@ const Locations = () => {
           {/* Skeleton Loaders */}
           {loading && (
             <>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <SkeletonCard key={`skeleton-${i}`} />
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={`skeleton-${i}`} className="h-[450px] bg-gray-100 rounded-3xl animate-pulse" />
               ))}
             </>
           )}
@@ -117,21 +142,16 @@ const Locations = () => {
 
         {/* Error State */}
         {error && (
-          <div className="text-center py-12">
+          <div className="text-center py-16">
             <p className="text-red-500 font-bold mb-4">{error}</p>
-            <button
-              onClick={fetchItems}
-              className="px-6 py-2 bg-gray-900 text-white rounded-full font-bold"
-            >
-              Try Again
-            </button>
+            <button onClick={fetchItems} className="px-8 py-3 bg-black text-white rounded-full font-bold">Try Again</button>
           </div>
         )}
 
         {/* End of content */}
         {!hasMore && !loading && items.length > 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400 font-medium italic">You've reached the end of the world ✨</p>
+            <p className="text-gray-400 font-medium italic">That's all for our global hotspots ✨</p>
           </div>
         )}
 

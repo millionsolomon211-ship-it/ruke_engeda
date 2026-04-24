@@ -29,8 +29,8 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen
-          ? "bg-white shadow-md py-3 text-black"
-          : "bg-transparent py-5 text-white"
+        ? "bg-white shadow-md py-3 text-black"
+        : "bg-transparent py-5 text-white"
         } lg:bg-transparent lg:text-white lg:py-6`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">

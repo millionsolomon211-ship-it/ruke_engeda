@@ -2,12 +2,12 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { prisma } from "@/lib/prisma" // This is the 'bridge' file we made earlier
+import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { checkRateLimit } from "@/lib/rate-limit"
 
 const handler = NextAuth({
-  // Use the Prisma adapter to save users to your DB automatically
+
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({

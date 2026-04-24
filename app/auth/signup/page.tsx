@@ -34,9 +34,9 @@ export default function SignupPage() {
                 return;
             }
 
-            // Redirect to OTP verification
+
             router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
-            
+
         } catch (err) {
             setError("Something went wrong");
             setLoading(false);
@@ -51,29 +51,29 @@ export default function SignupPage() {
             {error && <p style={{ color: "red", fontSize: "12px", textAlign: "center", marginBottom: "10px" }}>{error}</p>}
 
             <form className="form" onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    className="input" 
-                    placeholder="Full Name" 
+                <input
+                    type="text"
+                    className="input"
+                    placeholder="Full Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    required 
+                    required
                 />
-                <input 
-                    type="email" 
-                    className="input" 
-                    placeholder="Email" 
+                <input
+                    type="email"
+                    className="input"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required 
+                    required
                 />
-                <input 
-                    type="password" 
-                    className="input" 
-                    placeholder="Password" 
+                <input
+                    type="password"
+                    className="input"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required 
+                    required
                 />
                 <button className="form-btn" type="submit" disabled={loading}>
                     {loading ? "Creating..." : "Create account"}
