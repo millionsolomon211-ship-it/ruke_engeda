@@ -41,7 +41,7 @@ export default function UserInfoPage() {
                 phoneNumber
             });
 
-            router.push("/dashboard");
+            router.push("/");
             router.refresh();
         } catch (err) {
             setError("Something went wrong");

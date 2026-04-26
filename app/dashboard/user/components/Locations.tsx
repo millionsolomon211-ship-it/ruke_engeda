@@ -12,7 +12,13 @@ interface Location {
   rating?: string;
 }
 
-const Locations = () => {
+interface LocationsProps {
+  regionName?: string;
+  onSelect: (location: Location) => void;
+  onBack?: () => void;
+}
+
+const Locations = ({ regionName, onSelect, onBack }: LocationsProps) => {
   const [items, setItems] = useState<Location[]>([]);
   const [offset, setOffset] = useState(0);
   const offsetRef = useRef(0);
@@ -24,6 +30,15 @@ const Locations = () => {
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
+  // Reset state when regionName changes
+  useEffect(() => {
+    setItems([]);
+    setOffset(0);
+    offsetRef.current = 0;
+    setHasMore(true);
+    setError("");
+  }, [regionName]);
+
   const fetchItems = async () => {
     if (loading || !hasMore) return;
 
@@ -32,7 +47,7 @@ const Locations = () => {
 
     try {
       const currentOffset = offsetRef.current;
-      const res = await fetch(`/api/locations?offset=${currentOffset}&lim=${limit}`);
+      const res = await fetch(`/api/locations?offset=${currentOffset}&lim=${limit}&region=${regionName || ""}`);
       const data = await res.json();
 
       if (res.ok) {
@@ -92,15 +107,30 @@ const Locations = () => {
   return (
     <section id="locations" className="py-24 bg-white px-6">
       <div className="max-w-7xl mx-auto">
+        {regionName && (
+          <button 
+            onClick={onBack}
+            className="mb-12 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-teal-600 transition-colors"
+          >
+             <svg className="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            Back to Regions
+          </button>
+        )}
         <div className="mb-12">
           <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Prime Destinations</h2>
-          <p className="text-4xl md:text-5xl font-black text-black tracking-tighter uppercase">Global Hotspots</p>
+          <p className="text-4xl md:text-5xl font-black text-black tracking-tighter uppercase">
+            {regionName ? `${regionName} Highlights` : "Global Hotspots"}
+          </p>
         </div>
 
         {/* Cinematic Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {items.map((item) => (
-            <div key={item._id} className="group relative h-[450px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer">
+            <div 
+              key={item._id} 
+              onClick={() => onSelect(item)}
+              className="group relative h-[450px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
+            >
               <img
                 src={getImageUrl(item.image)}
                 alt={item.name}
@@ -129,6 +159,19 @@ const Locations = () => {
               </div>
             </div>
           ))}
+
+          {/* Empty State */}
+          {!loading && items.length === 0 && !error && (
+            <div className="col-span-full py-20 text-center bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
+              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 12.414m0 0L9.172 8.172m4.242 4.242L8.172 16.657m4.242-4.242L16.657 8.172" />
+                </svg>
+              </div>
+              <p className="text-xl font-bold text-gray-500">No locations found yet in this region.</p>
+              <p className="text-gray-400 mt-2">Check back later or explore another beautiful region!</p>
+            </div>
+          )}
 
           {/* Skeleton Loaders */}
           {loading && (

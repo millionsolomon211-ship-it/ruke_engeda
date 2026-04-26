@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
-const Navbar = () => {
+interface NavbarProps {
+  onNavigate: (view: 'home' | 'regions' | 'about' | 'collections') => void;
+}
+
+const Navbar = ({ onNavigate }: NavbarProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,15 +45,15 @@ const Navbar = () => {
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center gap-6">
-          <Link href="/#locations" className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
+          <button onClick={() => onNavigate('regions')} className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
             Destinations
-          </Link>
-          <Link href="/bookings" onClick={handleBookingsClick} className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
-            Bookings
-          </Link>
-          <Link href="/about" className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
+          </button>
+          <button onClick={(e) => { handleBookingsClick(e as any); onNavigate('collections'); }} className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-indigo-600 transition-all tracking-widest border border-white/10">
+            My Collections
+          </button>
+          <button onClick={() => onNavigate('about')} className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-lg text-xs font-bold uppercase hover:bg-teal-600 transition-all tracking-widest border border-white/10">
             About
-          </Link>
+          </button>
         </div>
 
         {/* Auth Buttons */}
@@ -99,9 +103,9 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-white text-black absolute top-full left-0 right-0 shadow-xl border-t animate-in fade-in slide-in-from-top-4">
           <div className="flex flex-col p-6 gap-6">
-            <Link href="/#destinations" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold">Destinations</Link>
-            <Link href="/bookings" onClick={(e) => { setIsMobileMenuOpen(false); handleBookingsClick(e); }} className="text-lg font-bold">Bookings</Link>
-            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold">About</Link>
+            <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('regions'); }} className="text-left text-lg font-bold">Destinations</button>
+            <button onClick={(e) => { setIsMobileMenuOpen(false); handleBookingsClick(e as any); onNavigate('collections'); }} className="text-left text-lg font-bold">My Collections</button>
+            <button onClick={() => { setIsMobileMenuOpen(false); onNavigate('about'); }} className="text-left text-lg font-bold">About</button>
             <hr />
             {session ? (
               <button onClick={() => signOut()} className="text-left text-lg font-bold text-red-500">Sign Out</button>

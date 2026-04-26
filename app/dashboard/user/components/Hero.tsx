@@ -10,7 +10,11 @@ const images = [
   "https://plus.unsplash.com/premium_photo-1699535659313-c95cf8111235?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
-const Hero = () => {
+interface HeroProps {
+  onStartJourney: () => void;
+}
+
+const Hero = ({ onStartJourney }: HeroProps) => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Slider */}
@@ -33,19 +37,19 @@ const Hero = () => {
         <div className="max-w-3xl">
           <h1 className="text-6xl lg:text-9xl font-black text-white leading-[0.9] mb-8 tracking-tighter drop-shadow-2xl">
             EXPLORE<br />
-            THE <span className="text-teal-400">WORLD.</span>
+            <span className="text-teal-400">ETIOPIA.</span>
           </h1>
           <p className="text-xl lg:text-2xl text-white/90 mb-12 max-w-lg font-medium leading-relaxed drop-shadow-lg">
             Embark on a journey to the most breathtaking destinations on Earth. Your next adventure starts here.
           </p>
           <div className="flex flex-wrap gap-6">
-            <button 
-              onClick={() => document.getElementById('locations')?.scrollIntoView({ behavior: 'smooth' })}
+            <button
+              onClick={onStartJourney}
               className="px-10 py-5 bg-teal-500 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-teal-400 transition-all shadow-[0_20px_50px_rgba(20,184,166,0.3)] hover:-translate-y-1"
             >
               Start Journey
             </button>
-            <button 
+            <button
               onClick={() => document.getElementById('about-snippet')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-10 py-5 bg-white/10 backdrop-blur-md border-2 border-white/20 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-white hover:text-black transition-all hover:-translate-y-1"
             >

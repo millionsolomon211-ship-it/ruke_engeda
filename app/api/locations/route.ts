@@ -4,11 +4,12 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const offset = searchParams.get("offset") || "0";
   const lim = searchParams.get("lim") || "3";
+  const region = searchParams.get("region") || "";
 
   const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
 
   try {
-    const res = await fetch(`${backendUrl}/api/locations?offset=${offset}&lim=${lim}`, {
+    const res = await fetch(`${backendUrl}/api/locations?offset=${offset}&lim=${lim}&region=${encodeURIComponent(region)}`, {
       cache: "no-store",
     });
 

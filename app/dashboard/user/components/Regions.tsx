@@ -9,7 +9,11 @@ interface Region {
   image: string;
 }
 
-const Regions = () => {
+interface RegionsProps {
+  onSelect: (region: Region) => void;
+}
+
+const Regions = ({ onSelect }: RegionsProps) => {
   const [items, setItems] = useState<Region[]>([]);
   const [offset, setOffset] = useState(0);
   const offsetRef = useRef(0);
@@ -131,7 +135,10 @@ const Regions = () => {
                 <p className="text-slate-500 text-base leading-relaxed mb-8 flex-grow">
                   Explore the unique heritage, vibrant traditions, and natural wonders of the {region.name} region.
                 </p>
-                <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-indigo-600 shadow-lg shadow-slate-200 hover:shadow-indigo-200 transition-all duration-300">
+                <button 
+                  onClick={() => onSelect(region)}
+                  className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-indigo-600 shadow-lg shadow-slate-200 hover:shadow-indigo-200 transition-all duration-300"
+                >
                   View Attractions
                 </button>
               </div>

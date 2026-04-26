@@ -23,13 +23,12 @@ export async function middleware(req: NextRequest) {
     }
 
     if (!isProfileIncomplete && pathname === "/auth/user_info") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
 
     // Unnecessary to view login/signup if authenticated
     if (isAuthRoute && pathname !== "/auth/user_info") {
-       // but wait, verify-otp might be needed? Usually if they have a token they are verified.
-       return NextResponse.redirect(new URL("/dashboard", req.url));
+       return NextResponse.redirect(new URL("/", req.url));
     }
   }
 

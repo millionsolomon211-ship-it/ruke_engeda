@@ -1,0 +1,49 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { action, ...body } = await request.json();
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const endpoint = action === 'remove' ? 'remove' : 'add';
+
+  try {
+    const res = await fetch(`${backendUrl}/api/favorites/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...body,
+        userEmail: session.user?.email,
+      }),
+    });
+
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to update favorites" }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+
+  try {
+    const res = await fetch(`${backendUrl}/api/favorites?userEmail=${session.user?.email}`);
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch favorites" }, { status: 500 });
+  }
+}

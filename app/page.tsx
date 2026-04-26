@@ -2,16 +2,24 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SplashCursor from '@/components/SplashCursor';
 import Navbar from "./dashboard/user/components/Navbar";
 import Hero from "./dashboard/user/components/Hero";
 import Locations from "./dashboard/user/components/Locations";
 import Regions from "./dashboard/user/components/Regions";
+import About from "./dashboard/user/components/About";
+import LocationDetail from "./dashboard/user/components/LocationDetail";
+import MyCollections from "./dashboard/user/components/MyCollections";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  
+  // View states
+  const [view, setView] = useState<'home' | 'regions' | 'locations' | 'detail' | 'collections'>('home');
+  const [selectedRegion, setSelectedRegion] = useState<any>(null);
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -22,48 +30,69 @@ export default function Home() {
     }
   }, [session, status, router]);
 
+  // Navigation handlers
+  const handleNavigate = (newView: 'home' | 'regions' | 'about' | 'collections') => {
+    if (newView === 'about') {
+      setView('home');
+      setTimeout(() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }), 100);
+    } else {
+      setView(newView);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleRegionSelect = (region: any) => {
+    setSelectedRegion(region);
+    setView('locations');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLocationSelect = (location: any) => {
+    setSelectedLocation(location);
+    setView('detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderContent = () => {
+    switch (view) {
+      case 'home':
+        return (
+          <>
+            <Hero onStartJourney={() => setView('regions')} />
+            <About />
+          </>
+        );
+      case 'regions':
+        return <Regions onSelect={handleRegionSelect} />;
+      case 'locations':
+        return (
+          <Locations 
+            regionName={selectedRegion?.name} 
+            onSelect={handleLocationSelect} 
+            onBack={() => setView('regions')} 
+          />
+        );
+      case 'detail':
+        return (
+          <LocationDetail 
+            location={selectedLocation} 
+            onBack={() => setView('locations')} 
+          />
+        );
+      case 'collections':
+        return <MyCollections onBack={() => setView('home')} />;
+      default:
+        return <Hero onStartJourney={() => setView('regions')} />;
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white relative">
       <SplashCursor />
-      <Navbar />
+      <Navbar onNavigate={handleNavigate} />
 
-      <main className="relative z-10">
-        {/* Full screen Hero section - imported from dashboard/user */}
-        <Hero />
-
-        {/* Global Hotspots Locations section */}
-        <Locations />
-        
-        {/* Infinite scroll Regions section */}
-        <Regions />
-
-
-        {/* About Section Snippet */}
-        <section id="about-snippet" className="py-24 bg-white px-6 max-lg:bg-transparent max-lg:mobile-transparent">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1">
-              <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Our Story</h2>
-              <p className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-8 leading-tight">
-                CRAFTING MEMORIES<br />
-                ACROSS THE GLOBE
-              </p>
-              <p className="text-gray-600 mb-8 leading-loose text-lg">
-                RUKE is a premium tourism platform dedicated to connecting travelers with unique, authentic, and unforgettable locations.
-              </p>
-              <button className="px-8 py-3 bg-teal-600 text-white rounded-full font-bold hover:bg-teal-700 transition-all shadow-xl">
-                Read Our Story
-              </button>
-            </div>
-            <div className="flex-1 grid grid-cols-2 gap-4 h-[500px]">
-              <div className="rounded-2xl overflow-hidden mt-12 bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="Travel" />
-              </div>
-              <div className="rounded-2xl overflow-hidden mb-12 bg-gray-100">
-                <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="Beach" />
-              </div>
-            </div>
-          </div>
-        </section>
+      <main className="relative z-10 flex-grow">
+        {renderContent()}
       </main>
 
       {/* Footer */}

@@ -15,7 +15,7 @@ export default function DashboardPage() {
       if (userStatus === "admin" || userStatus === "master") {
         router.push("/dashboard/admin");
       } else {
-        router.push("/dashboard/user");
+        router.push("/");
       }
     }
   }, [session, status, router]);
