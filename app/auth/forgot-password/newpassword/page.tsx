@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SplashCursor from '@/components/SplashCursor';
 
-export default function NewPasswordPage() {
+function NewPasswordForm() {
     const [showPass, setShowPass] = useState(false);
     const [passwords, setPasswords] = useState({ new: "", confirm: "" });
     const [loading, setLoading] = useState(false);
@@ -127,5 +127,13 @@ export default function NewPasswordPage() {
                 </button>
             </form>
         </div>
+    );
+}
+
+export default function NewPasswordPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <NewPasswordForm />
+        </Suspense>
     );
 }

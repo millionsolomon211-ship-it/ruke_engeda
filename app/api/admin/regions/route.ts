@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3001";
 const ADMIN_KEY = "1q2w3e4r5t";
