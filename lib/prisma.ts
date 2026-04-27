@@ -9,7 +9,12 @@ const globalForPrisma = globalThis as unknown as {
 
 const connectionString = `${process.env.DATABASE_URL}`;
 
-const pool = new Pool({ connectionString });
+const pool = new Pool({ 
+  connectionString,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 const adapter = new PrismaPg(pool);
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
