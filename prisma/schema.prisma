@@ -1,7 +1,8 @@
 // 1. Data Source: Changed from "mongodb" to "postgresql"
 datasource db {
-  provider = "postgresql"
-  
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // 2. Generator: Creates your "Remote Control" (Prisma Client)
