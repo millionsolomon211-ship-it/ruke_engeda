@@ -126,17 +126,12 @@ const Regions = ({ onSelect }: RegionsProps) => {
               <div className="p-8 flex flex-col flex-grow">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">{region.name}</h3>
-                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-600 transition-colors duration-300">
-                    <svg className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="Arrow-right 17 8l4 4m0 0l-4 4m4-4H3"></path>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
+
                 </div>
                 <p className="text-slate-500 text-base leading-relaxed mb-8 flex-grow">
                   Explore the unique heritage, vibrant traditions, and natural wonders of the {region.name} region.
                 </p>
-                <button 
+                <button
                   onClick={() => onSelect(region)}
                   className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-indigo-600 shadow-lg shadow-slate-200 hover:shadow-indigo-200 transition-all duration-300"
                 >
