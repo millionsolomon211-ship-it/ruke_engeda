@@ -25,7 +25,7 @@ const LocationDetail = ({ location, onBack }: LocationDetailProps) => {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   const getImageUrl = (imgName: string) => {
     if (!imgName || imgName === "noname") return `${backendUrl}/img/region/nopic.jpg`;

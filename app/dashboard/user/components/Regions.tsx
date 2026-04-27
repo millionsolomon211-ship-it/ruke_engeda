@@ -23,7 +23,7 @@ const Regions = ({ onSelect }: RegionsProps) => {
   const loaderRef = useRef(null);
   const limit = 3;
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"; // Used for images
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://service-lime-gamma.vercel.app"; // Used for images
 
   const fetchItems = async () => {
     if (loading || !hasMore) return;

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const backendUrl = process.env.BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   try {
     const res = await fetch(`${backendUrl}/api/bookings`, {
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const backendUrl = process.env.BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   try {
     const res = await fetch(`${backendUrl}/api/bookings?userEmail=${session.user?.email}`);

@@ -26,7 +26,7 @@ const MyCollections = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"bookings" | "favorites">("bookings");
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   useEffect(() => {
     if (session) {

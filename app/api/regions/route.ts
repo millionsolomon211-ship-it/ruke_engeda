@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const offset = searchParams.get("offset") || "0";
   const lim = searchParams.get("lim") || "5";
 
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const backendUrl = process.env.BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   try {
     const res = await fetch(`${backendUrl}/api/regions?offset=${offset}&lim=${lim}`, {
