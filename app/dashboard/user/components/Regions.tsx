@@ -86,8 +86,9 @@ const Regions = ({ onSelect }: RegionsProps) => {
   }, [loading, hasMore]);
 
   const getImageUrl = (imgName: string) => {
-    const name = imgName === "noname" || !imgName ? "nopic.jpg" : imgName;
-    return `${backendUrl}/img/region/${name}`;
+    if (!imgName || imgName === "noname") return `${backendUrl}/img/region/nopic.jpg`;
+    if (imgName.startsWith("http")) return imgName;
+    return `${backendUrl}/img/region/${imgName}`;
   };
 
   return (
