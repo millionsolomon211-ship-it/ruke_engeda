@@ -108,11 +108,11 @@ const Locations = ({ regionName, onSelect, onBack }: LocationsProps) => {
     <section id="locations" className="py-24 bg-white px-6">
       <div className="max-w-7xl mx-auto">
         {regionName && (
-          <button 
+          <button
             onClick={onBack}
             className="mb-12 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-teal-600 transition-colors"
           >
-             <svg className="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            <svg className="w-5 h-5 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             Back to Regions
           </button>
         )}
@@ -126,8 +126,8 @@ const Locations = ({ regionName, onSelect, onBack }: LocationsProps) => {
         {/* Cinematic Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {items.map((item) => (
-            <div 
-              key={item._id} 
+            <div
+              key={item._id}
               onClick={() => onSelect(item)}
               className="group relative h-[450px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer"
             >
@@ -194,7 +194,7 @@ const Locations = ({ regionName, onSelect, onBack }: LocationsProps) => {
         {/* End of content */}
         {!hasMore && !loading && items.length > 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400 font-medium italic">That's all for our global hotspots ✨</p>
+            <p className="text-gray-400 font-medium italic">That's all for our global hotspots</p>
           </div>
         )}
 
