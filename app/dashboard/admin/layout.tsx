@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
-import SplashCursor from '@/components/SplashCursor';
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -30,7 +30,7 @@ export default function DashboardLayout({
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-      <SplashCursor />
+      
       <header style={{ padding: '20px', borderBottom: '1px solid #ddd', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>Dashboard</h2>
         <div>
