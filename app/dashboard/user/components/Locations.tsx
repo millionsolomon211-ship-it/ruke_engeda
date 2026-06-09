@@ -28,7 +28,7 @@ const Locations = ({ regionName, onSelect, onBack }: LocationsProps) => {
   const loaderRef = useRef(null);
   const limit = 3;
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://service-lime-gamma.vercel.app";
+  const backendUrl = process.env.BACKEND_URL || "https://service-lime-gamma.vercel.app";
 
   // Reset state when regionName changes
   useEffect(() => {
